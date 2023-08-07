@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: secretpassword123
+      MYSQL_DATABASE: my_notes
+    volumes:
+      - ./backend/db-mysql:/docker-entrypoint-initdb.d
+    ports:
+      - 3306:3306
+  api:
+    build: ./backend
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    environment:
+    #This is how our api is going to connect to the mysql instance
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: secretpassword123
+      DB_NAME: my_notes
+  web:
+    build: ./frontend/my-app
+    ports:
+      - 3000:3000
